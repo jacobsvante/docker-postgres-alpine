@@ -10,16 +10,17 @@ ENV LANG="en_US.UTF-8" \
 RUN apk -U upgrade && \
     mkdir -p /data && \
     apk -U add \
+      git\
       tzdata \
       postgresql postgresql-client postgresql-contrib \
       python && \
     sed -E -i -e 's/\/var\/lib\/postgresql/\/data/' /etc/passwd && \
     rm /etc/localtime && \
     ln -s /usr/share/zoneinfo/Africa/Johannesburg /etc/localtime && \
+    git clone --depth 1 https://github.com/gregs1104/pgtune.git /pgtune && \
+    apk del git && \
     rm -rf /tmp/src && \
     rm -rf /var/cache/apk/*
-
-ADD https://github.com/gregs1104/pgtune.git /pgtune
 
 ADD start.sh /start.sh
 ADD setupPost.sql /setupPost.sql

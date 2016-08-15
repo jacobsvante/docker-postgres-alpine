@@ -28,9 +28,10 @@ if [ ! -f /data/db/postgresql.conf ]; then
     su postgres -c "/usr/bin/postgres -D /data/db" &
     sleep 1
     su postgres -c "psql < /setupPost.sql"
-    pgtune -i /data/db/postgresql.conf  -o /data/db/postgresql.conf.new --type=Mixed
+    /pgtune/pgtune -i /data/db/postgresql.conf  -o /data/db/postgresql.conf.new --type=Mixed
     mv /data/db/postgresql.conf /data/db/postgresql.conf.default
     mv /data/db/postgresql.conf.new /data/db/postgresql.conf
+    sed -Ei -e 's/.*checkpoint_segments.*//' /data/db/postgresql.conf
     chown -R postgres: /data
     su postgres -c "pg_ctl stop  -D /data/db"
 fi
