@@ -18,17 +18,17 @@ if [ ! -f /data/db/postgresql.conf ]; then
     sed -i "s/stats_temp_directory.*/stats_temp_directory = '\/data\/db\/9.4-main.pg_stat_tmp'/" /data/db/postgresql.conf
 
     echo "log_destination = 'stderr'" >> /data/db/postgresql.conf
-    #echo "logging_collector = on" >> /data/db/postgresql.conf
-    #echo "log_directory = '/data/log/postgresql'" >> /data/db/postgresql.conf
-    #echo "log_rotation_age = 1d" >> /data/db/postgresql.conf
-    #echo "log_rotation_size = 10MB" >> /data/db/postgresql.conf
+    echo "logging_collector = on" >> /data/db/postgresql.conf
+    echo "log_directory = '/data/log/postgresql'" >> /data/db/postgresql.conf
+    echo "log_rotation_age = 1d" >> /data/db/postgresql.conf
+    echo "log_rotation_size = 10MB" >> /data/db/postgresql.conf
 
     chown -R postgres: /data
 
     su postgres -c "/usr/bin/postgres -D /data/db" &
     sleep 1
     su postgres -c "psql < /setupPost.sql"
-    /pgtune/pgtune -i /data/db/postgresql.conf  -o /data/db/postgresql.conf.new --type=Mixed
+    /pgtune/pgtune -i /data/db/postgresql.conf  -o /data/db/postgresql.conf.new --type=DW
     mv /data/db/postgresql.conf /data/db/postgresql.conf.default
     mv /data/db/postgresql.conf.new /data/db/postgresql.conf
     sed -Ei -e 's/.*checkpoint_segments.*//' /data/db/postgresql.conf
